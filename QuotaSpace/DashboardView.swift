@@ -88,9 +88,10 @@ private struct UsageCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
-                Image(systemName: item.kind.icon)
+                MonitorIcon(kind: item.kind)
                     .font(.title2)
                     .foregroundStyle(tint)
+                    .frame(width: 24, height: 24)
                     .frame(width: 44, height: 44)
                     .glassEffect(.clear, in: Circle())
                 VStack(alignment: .leading, spacing: 2) {

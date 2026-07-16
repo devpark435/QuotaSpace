@@ -44,7 +44,7 @@ private struct EditableItemRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: item.kind.icon).frame(width: 24)
+            MonitorIcon(kind: item.kind).frame(width: 18, height: 18)
             TextField("Name", text: binding(\.name)).textFieldStyle(.plain).frame(minWidth: 100)
             Spacer()
             if showDestinations {

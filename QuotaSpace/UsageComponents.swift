@@ -1,5 +1,17 @@
 import SwiftUI
 
+struct MonitorIcon: View {
+    let kind: MonitorKind
+
+    var body: some View {
+        if let asset = kind.brandAsset {
+            Image(asset).resizable().scaledToFit()
+        } else {
+            Image(systemName: kind.icon)
+        }
+    }
+}
+
 struct UsageBars: View {
     let snapshot: UsageSnapshot?
     let error: String?

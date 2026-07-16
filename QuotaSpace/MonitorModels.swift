@@ -10,6 +10,14 @@ enum MonitorKind: String, Codable, Sendable {
         case .disk: "internaldrive"
         }
     }
+
+    var brandAsset: String? {
+        switch self {
+        case .claude: "ClaudeLogo"
+        case .codex: "CodexLogo"
+        case .disk: nil
+        }
+    }
 }
 
 struct MonitorItem: Codable, Identifiable, Equatable, Sendable {

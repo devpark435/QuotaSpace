@@ -30,7 +30,8 @@ final class StatusBarController: NSObject {
         for item in visible {
             let statusItem = statusItems[item.id] ?? makeStatusItem(for: item)
             let remaining = store.snapshots[item.id]?.tightestRemaining
-            statusItem.button?.image = NSImage(systemSymbolName: item.kind.icon, accessibilityDescription: item.name)
+            statusItem.button?.image = item.kind.brandAsset.flatMap { NSImage(named: $0) }
+                ?? NSImage(systemSymbolName: item.kind.icon, accessibilityDescription: item.name)
             statusItem.button?.image?.isTemplate = true
             statusItem.button?.title = " \(shortName(item)) \(remaining.map { "\($0)%" } ?? "—")"
             statusItem.button?.toolTip = "\(item.name) remaining"
@@ -67,7 +68,10 @@ struct StatusDetailView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let item = store.items.first(where: { $0.id == itemID }) {
-                Label(item.name, systemImage: item.kind.icon).font(.title2.bold())
+                HStack {
+                    MonitorIcon(kind: item.kind).frame(width: 22, height: 22)
+                    Text(item.name).font(.title2.bold())
+                }
                 UsageBars(snapshot: store.snapshots[item.id], error: store.errors[item.id])
                 Spacer()
                 HStack {
@@ -84,4 +88,3 @@ struct StatusDetailView: View {
         .padding(18)
     }
 }
-

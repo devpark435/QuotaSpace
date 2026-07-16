@@ -40,8 +40,9 @@ private struct OnboardingRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            Image(systemName: item.kind.icon)
+            MonitorIcon(kind: item.kind)
                 .font(.title2)
+                .frame(width: 20, height: 20)
                 .frame(width: 38, height: 38)
                 .glassEffect(.clear, in: Circle())
             VStack(alignment: .leading, spacing: 2) {
