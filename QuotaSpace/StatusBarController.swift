@@ -33,7 +33,8 @@ final class StatusBarController: NSObject {
             statusItem.button?.image = item.kind.brandAsset.flatMap { NSImage(named: $0) }
                 ?? NSImage(systemSymbolName: item.kind.icon, accessibilityDescription: item.name)
             statusItem.button?.image?.isTemplate = true
-            statusItem.button?.title = " \(shortName(item)) \(remaining.map { "\($0)%" } ?? "—")"
+            statusItem.button?.image?.size = NSSize(width: 16, height: 16)
+            statusItem.button?.title = " \(remaining.map { "\($0)%" } ?? "—")"
             statusItem.button?.toolTip = "\(item.name) remaining"
         }
     }
@@ -45,10 +46,6 @@ final class StatusBarController: NSObject {
         statusItem.button?.action = #selector(showDetail(_:))
         statusItems[item.id] = statusItem
         return statusItem
-    }
-
-    private func shortName(_ item: MonitorItem) -> String {
-        item.kind == .claude ? String(item.name.prefix(1)).uppercased() : ""
     }
 
     @objc private func showDetail(_ sender: NSStatusBarButton) {
