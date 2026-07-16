@@ -13,8 +13,12 @@ final class MonitorStore: ObservableObject {
     private let defaults = UserDefaults.standard
 
     private init() {
+        UserDefaults.standard.removeObject(forKey: "claudeTokenEmails")
         items = Self.decode([MonitorItem].self, from: UserDefaults.standard.data(forKey: "monitorItems")) ?? []
         snapshots = Self.decode([String: UsageSnapshot].self, from: UserDefaults.standard.data(forKey: "usageSnapshots")) ?? [:]
+        for id in snapshots.keys where id.hasPrefix("claude:") {
+            snapshots[id]?.detail = "Claude"
+        }
         if items.isEmpty {
             items = AccountDiscovery.discover()
         } else {

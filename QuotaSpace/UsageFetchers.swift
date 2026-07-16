@@ -1,5 +1,4 @@
 import Foundation
-import CryptoKit
 import Security
 
 enum UsageFetchError: LocalizedError {
@@ -22,11 +21,10 @@ struct ClaudeUsageFetcher {
     static func fetch() async throws -> UsageSnapshot {
         guard let credentials = keychainCredentials().flatMap(Credentials.init),
               !credentials.isExpired else { throw UsageFetchError.credentialsUnavailable }
-        let email = try await tokenEmail(credentials.accessToken)
-        return try await usage(token: credentials.accessToken, detail: email)
+        return try await usage(token: credentials.accessToken)
     }
 
-    private static func usage(token: String, detail: String) async throws -> UsageSnapshot {
+    private static func usage(token: String) async throws -> UsageSnapshot {
         var request = URLRequest(url: URL(string: "https://api.anthropic.com/api/oauth/usage")!)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
@@ -43,28 +41,8 @@ struct ClaudeUsageFetcher {
             weeklyRemaining: weekly.remaining,
             sessionReset: session.reset,
             weeklyReset: weekly.reset,
-            detail: detail
+            detail: "Claude"
         )
-    }
-
-    private static func tokenEmail(_ token: String) async throws -> String {
-        let key = SHA256.hash(data: Data(token.utf8)).map { String(format: "%02x", $0) }.joined()
-        var cache = UserDefaults.standard.dictionary(forKey: "claudeTokenEmails") as? [String: String] ?? [:]
-        if let email = cache[key] { return email }
-
-        var request = URLRequest(url: URL(string: "https://api.anthropic.com/api/oauth/profile")!)
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
-        let (data, response) = try await URLSession.shared.data(for: request)
-        guard (response as? HTTPURLResponse)?.statusCode == 200,
-              let root = try JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let account = root["account"] as? [String: Any],
-              let email = account["email"] as? String else {
-            throw UsageFetchError.invalidResponse
-        }
-        cache[key] = email
-        UserDefaults.standard.set(cache, forKey: "claudeTokenEmails")
-        return email
     }
 
     private static func keychainCredentials() -> Data? {
