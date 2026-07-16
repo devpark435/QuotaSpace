@@ -26,6 +26,7 @@
 		100000000000000000000012 /* MonitorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000C /* MonitorModels.swift */; };
 		100000000000000000000013 /* AccountDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000000D /* AccountDiscovery.swift */; };
 		100000000000000000000014 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000014 /* Assets.xcassets */; };
+		100000000000000000000015 /* UsageRefreshCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000015 /* UsageRefreshCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		200000000000000000000012 /* SettingsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViews.swift; sourceTree = "<group>"; };
 		200000000000000000000013 /* UsageComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageComponents.swift; sourceTree = "<group>"; };
 		200000000000000000000014 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		200000000000000000000015 /* UsageRefreshCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageRefreshCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +109,7 @@
 				200000000000000000000012 /* SettingsViews.swift */,
 				200000000000000000000013 /* UsageComponents.swift */,
 				200000000000000000000014 /* Assets.xcassets */,
+				200000000000000000000015 /* UsageRefreshCoordinator.swift */,
 			);
 			path = QuotaSpace;
 			sourceTree = "<group>";
@@ -218,7 +221,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A00000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000001, 100000000000000000000002, 100000000000000000000003, 10000000000000000000000A, 10000000000000000000000B, 10000000000000000000000C, 10000000000000000000000D, 10000000000000000000000E, 10000000000000000000000F, 100000000000000000000010, 100000000000000000000011, ); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000001, 100000000000000000000002, 100000000000000000000003, 10000000000000000000000A, 10000000000000000000000B, 10000000000000000000000C, 10000000000000000000000D, 10000000000000000000000E, 10000000000000000000000F, 100000000000000000000010, 100000000000000000000011, 100000000000000000000015, ); runOnlyForDeploymentPostprocessing = 0; };
 		A00000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000004, 100000000000000000000005, ); runOnlyForDeploymentPostprocessing = 0; };
 		A00000000000000000000003 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000006, 100000000000000000000007, 100000000000000000000012, 100000000000000000000013, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */

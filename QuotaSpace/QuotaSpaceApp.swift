@@ -24,7 +24,12 @@ struct QuotaSpaceApp: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         StatusBarController.shared.start()
+        UsageRefreshCoordinator.shared.start()
         Task { await MonitorStore.shared.refresh() }
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        UsageRefreshCoordinator.shared.stop()
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
