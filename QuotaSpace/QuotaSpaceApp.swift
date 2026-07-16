@@ -3,34 +3,41 @@ import SwiftUI
 
 @main
 struct QuotaSpaceApp: App {
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     var body: some Scene {
-        MenuBarExtra {
-            DashboardView()
-        } label: {
-            Label("QuotaSpace", systemImage: "gauge.with.dots.needle.33percent")
+        WindowGroup("QuotaSpace", id: "main") {
+            AppRootView()
+                .environmentObject(MonitorStore.shared)
         }
-        .menuBarExtraStyle(.window)
+        .defaultSize(width: 760, height: 560)
 
         Settings {
-            SettingsView()
+            DisplaySettingsView()
+                .environmentObject(MonitorStore.shared)
+                .frame(width: 560, height: 420)
         }
     }
 }
 
-struct SettingsView: View {
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        StatusBarController.shared.start()
+        Task { await MonitorStore.shared.refresh() }
+    }
+
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { false }
+}
+
+struct AppRootView: View {
+    @AppStorage("completedOnboarding") private var completedOnboarding = false
+
     var body: some View {
-        Form {
-            Section("Integrations") {
-                LabeledContent("Claude Code", value: "Coming soon")
-                LabeledContent("Codex", value: "Coming soon")
-            }
-            Section {
-                Text("QuotaSpace currently reads disk capacity locally. AI quota connections will be added when a reliable provider API is available.")
-                    .foregroundStyle(.secondary)
-            }
+        if completedOnboarding {
+            DashboardView()
+        } else {
+            OnboardingView(completedOnboarding: $completedOnboarding)
         }
-        .formStyle(.grouped)
-        .frame(width: 460, height: 230)
     }
 }
-

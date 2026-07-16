@@ -2,124 +2,121 @@ import AppKit
 import SwiftUI
 
 struct DashboardView: View {
+    @EnvironmentObject private var store: MonitorStore
+    @State private var selection = Section.overview
+
+    enum Section: String, CaseIterable, Identifiable {
+        case overview = "Overview"
+        case accounts = "Accounts"
+        case display = "Display"
+        var id: Self { self }
+        var icon: String {
+            switch self {
+            case .overview: "rectangle.grid.1x2"
+            case .accounts: "person.2"
+            case .display: "menubar.rectangle"
+            }
+        }
+    }
+
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 60)) { context in
-            let disk = (try? DiskCapacity.current()) ?? .unavailable
+        NavigationSplitView {
+            List(Section.allCases, selection: $selection) { section in
+                Label(section.rawValue, systemImage: section.icon)
+                    .tag(section)
+            }
+            .navigationTitle("QuotaSpace")
+            .frame(minWidth: 180)
+        } detail: {
+            Group {
+                switch selection {
+                case .overview: OverviewView()
+                case .accounts: AccountsView()
+                case .display: DisplaySettingsView()
+                }
+            }
+            .environmentObject(store)
+        }
+        .toolbar {
+            ToolbarItem {
+                Button("Refresh", systemImage: "arrow.clockwise") {
+                    Task { await store.refresh() }
+                }
+                .disabled(store.isRefreshing)
+            }
+        }
+        .task { await store.refresh() }
+    }
+}
 
-            VStack(alignment: .leading, spacing: 16) {
-                header(updatedAt: context.date)
+private struct OverviewView: View {
+    @EnvironmentObject private var store: MonitorStore
 
-                GlassEffectContainer(spacing: 12) {
-                    VStack(spacing: 12) {
-                        DiskCard(capacity: disk)
-                        IntegrationCard(name: "Claude Code", icon: "sparkles", tint: .orange)
-                        IntegrationCard(name: "Codex", icon: "chevron.left.forwardslash.chevron.right", tint: .green)
-                    }
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Overview")
+                        .font(.largeTitle.bold())
+                    Text(store.isRefreshing ? "Refreshing usage…" : "Your available capacity at a glance")
+                        .foregroundStyle(.secondary)
                 }
 
-                footer
+                GlassEffectContainer(spacing: 14) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 250), spacing: 14)], spacing: 14) {
+                        ForEach(store.items.filter(\.isEnabled)) { item in
+                            UsageCard(
+                                item: item,
+                                snapshot: store.snapshots[item.id],
+                                error: store.errors[item.id]
+                            )
+                        }
+                    }
+                }
             }
-            .padding(18)
-            .frame(width: 340)
+            .padding(28)
         }
+        .navigationTitle("Overview")
     }
+}
 
-    private func header(updatedAt: Date) -> some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("QuotaSpace")
+private struct UsageCard: View {
+    let item: MonitorItem
+    let snapshot: UsageSnapshot?
+    let error: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Image(systemName: item.kind.icon)
+                    .font(.title2)
+                    .foregroundStyle(tint)
+                    .frame(width: 44, height: 44)
+                    .glassEffect(.clear, in: Circle())
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(item.kind == .claude ? "Claude · \(item.name)" : item.name)
+                        .font(.headline)
+                    Text(snapshot?.detail ?? item.kind.rawValue.capitalized)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text(snapshot?.tightestRemaining.map { "\($0)%" } ?? "—")
                     .font(.title2.bold())
-                Text(updatedAt, style: .time)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .accessibilityLabel("Last updated")
+                    .contentTransition(.numericText())
             }
-            Spacer()
-            Image(systemName: "circle.grid.2x2.fill")
-                .font(.title2)
-                .foregroundStyle(.tint)
+            UsageBars(snapshot: snapshot, error: error)
         }
+        .padding(18)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 22))
     }
 
-    private var footer: some View {
-        HStack {
-            SettingsLink {
-                Label("Settings", systemImage: "gearshape")
-            }
-            .buttonStyle(.glass)
-
-            Spacer()
-
-            Button("Quit") {
-                NSApplication.shared.terminate(nil)
-            }
-            .buttonStyle(.plain)
-            .foregroundStyle(.secondary)
+    private var tint: Color {
+        switch item.kind {
+        case .claude: .orange
+        case .codex: .green
+        case .disk: .blue
         }
-        .font(.caption)
     }
 }
-
-private struct DiskCard: View {
-    let capacity: DiskCapacity
-
-    var body: some View {
-        HStack(spacing: 14) {
-            Gauge(value: capacity.availableFraction) {
-                Text("Disk")
-            } currentValueLabel: {
-                Text("\(capacity.availablePercent)")
-                    .font(.caption.bold())
-            }
-            .gaugeStyle(.accessoryCircularCapacity)
-            .tint(.blue)
-            .frame(width: 48, height: 48)
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Macintosh HD")
-                    .font(.headline)
-                Text(capacity.total > 0
-                     ? "\(capacity.availableText) free of \(capacity.totalText)"
-                     : "Capacity unavailable")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-        }
-        .padding(14)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 18))
-        .accessibilityElement(children: .combine)
-    }
-}
-
-private struct IntegrationCard: View {
-    let name: String
-    let icon: String
-    let tint: Color
-
-    var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: icon)
-                .font(.title3)
-                .foregroundStyle(tint)
-                .frame(width: 48, height: 48)
-                .glassEffect(.clear, in: Circle())
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(name)
-                    .font(.headline)
-                Text("Integration coming soon")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
-            Spacer()
-            Text("—")
-                .font(.title3)
-                .foregroundStyle(.tertiary)
-        }
-        .padding(14)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 18))
-        .accessibilityElement(children: .combine)
-    }
-}
-

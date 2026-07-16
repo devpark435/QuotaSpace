@@ -1,6 +1,6 @@
 # QuotaSpace
 
-A native macOS menu bar app and desktop widget for AI quotas and system capacity.
+A native macOS app, menu bar monitor, and desktop widget for AI quotas and system capacity.
 
 ## Requirements
 
@@ -11,5 +11,4 @@ A native macOS menu bar app and desktop widget for AI quotas and system capacity
 
 Open `QuotaSpace.xcodeproj`, select the `QuotaSpace` scheme, and run.
 
-The first slice reports real disk capacity. Claude Code and Codex quota cards are intentionally marked as pending because neither CLI currently exposes a stable, non-interactive remaining-quota command.
-
+On first launch, QuotaSpace finds Claude profiles referenced by `CLAUDE_CONFIG_DIR`, the default Claude profile, Codex, and local disk capacity. Each monitored item can have its own menu bar status item. Claude uses the signed-in profile's OAuth usage endpoint; Codex uses the local `codex app-server` rate-limit RPC.
