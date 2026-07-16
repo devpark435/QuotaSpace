@@ -20,7 +20,7 @@ struct UsageBars: View {
         if let snapshot {
             VStack(spacing: 10) {
                 if snapshot.isStale {
-                    Label("Stale", systemImage: "clock.badge.exclamationmark")
+                    Label("Disconnected", systemImage: "wifi.slash")
                         .foregroundStyle(.orange)
                         .font(.caption)
                 }
