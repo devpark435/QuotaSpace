@@ -29,13 +29,15 @@ struct UsageSnapshot: Codable, Equatable, Sendable {
     var weeklyReset: Date?
     var detail: String?
     var updatedAt = Date()
+    var staleSince: Date?
 
     var tightestRemaining: Int? {
         [sessionRemaining, weeklyRemaining].compactMap { $0 }.min()
     }
+
+    var isStale: Bool { staleSince != nil }
 }
 
 extension Notification.Name {
     static let monitorStoreChanged = Notification.Name("QuotaSpace.monitorStoreChanged")
 }
-

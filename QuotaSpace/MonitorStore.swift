@@ -15,7 +15,11 @@ final class MonitorStore: ObservableObject {
     private init() {
         items = Self.decode([MonitorItem].self, from: UserDefaults.standard.data(forKey: "monitorItems")) ?? []
         snapshots = Self.decode([String: UsageSnapshot].self, from: UserDefaults.standard.data(forKey: "usageSnapshots")) ?? [:]
-        if items.isEmpty { items = AccountDiscovery.discover() }
+        if items.isEmpty {
+            items = AccountDiscovery.discover()
+        } else {
+            rescan()
+        }
     }
 
     func rescan() {
@@ -55,7 +59,7 @@ final class MonitorStore: ObservableObject {
                         detail: "\(disk.availableText) free of \(disk.totalText)"
                     )
                 case .claude:
-                    snapshot = try await ClaudeUsageFetcher.fetch(configDirectory: item.source)
+                    snapshot = try await ClaudeUsageFetcher.fetch()
                 case .codex:
                     snapshot = try await CodexUsageFetcher.fetch()
                 }
@@ -63,6 +67,9 @@ final class MonitorStore: ObservableObject {
                 errors[item.id] = nil
             } catch {
                 errors[item.id] = error.localizedDescription
+                if snapshots[item.id] != nil {
+                    snapshots[item.id]?.staleSince = snapshots[item.id]?.staleSince ?? Date()
+                }
             }
         }
     }
@@ -77,4 +84,3 @@ final class MonitorStore: ObservableObject {
         data.flatMap { try? JSONDecoder().decode(type, from: $0) }
     }
 }
-

@@ -12,17 +12,13 @@ final class CapacityTests: XCTestCase {
         XCTAssertEqual(DiskCapacity.unavailable.availableFraction, 0)
     }
 
-    func testFindsClaudeConfigDirectoriesWithoutExecutingShell() throws {
+    func testDiscoversOnlyOneCurrentClaudeAccount() throws {
         let home = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
-        let work = home.appendingPathComponent(".claude-work")
-        try FileManager.default.createDirectory(at: work, withIntermediateDirectories: true)
-        try Data().write(to: work.appendingPathComponent(".claude.json"))
-        try "alias banana='CLAUDE_CONFIG_DIR=$HOME/.claude-work command claude'"
-            .write(to: home.appendingPathComponent(".zshrc"), atomically: true, encoding: .utf8)
+        try FileManager.default.createDirectory(at: home.appendingPathComponent(".claude-work"), withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: home) }
 
-        let matches = AccountDiscovery.discover(home: home)
-
-        XCTAssertTrue(matches.contains { $0.kind == .claude && $0.name == "Banana" && $0.source == work.path })
+        let claude = AccountDiscovery.discover(home: home).filter { $0.kind == .claude }
+        XCTAssertEqual(claude.count, 1)
+        XCTAssertEqual(claude.first?.id, "claude:keychain")
     }
 }

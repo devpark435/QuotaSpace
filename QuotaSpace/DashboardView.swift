@@ -94,7 +94,7 @@ private struct UsageCard: View {
                     .frame(width: 44, height: 44)
                     .glassEffect(.clear, in: Circle())
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(item.kind == .claude ? "Claude · \(item.name)" : item.name)
+                    Text(item.name)
                         .font(.headline)
                     Text(snapshot?.detail ?? item.kind.rawValue.capitalized)
                         .font(.caption)

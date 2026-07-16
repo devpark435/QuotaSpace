@@ -12,9 +12,9 @@ struct AccountsView: View {
             } header: {
                 Text("Connected accounts")
             } footer: {
-                Text("QuotaSpace discovers Claude profiles from CLAUDE_CONFIG_DIR aliases without executing your shell configuration.")
+                Text("Claude follows the account currently active in Claude Code. Switching accounts is reflected on the next refresh.")
             }
-            Button("Scan for Accounts", systemImage: "magnifyingglass") { store.rescan() }
+            Button("Refresh Accounts", systemImage: "arrow.clockwise") { store.rescan() }
         }
         .formStyle(.grouped)
         .navigationTitle("Accounts")

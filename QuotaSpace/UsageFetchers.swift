@@ -1,4 +1,6 @@
 import Foundation
+import CryptoKit
+import Security
 
 enum UsageFetchError: LocalizedError {
     case credentialsUnavailable
@@ -8,7 +10,7 @@ enum UsageFetchError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .credentialsUnavailable: "Sign in with this Claude profile to show usage."
+        case .credentialsUnavailable: "Open Claude Code and sign in to show usage."
         case .invalidResponse: "The provider returned an unsupported usage response."
         case let .commandUnavailable(name): "\(name) is not available."
         case .timedOut: "The provider did not respond in time."
@@ -17,15 +19,14 @@ enum UsageFetchError: LocalizedError {
 }
 
 struct ClaudeUsageFetcher {
-    static func fetch(configDirectory: String) async throws -> UsageSnapshot {
-        let credentials = URL(fileURLWithPath: configDirectory).appendingPathComponent(".credentials.json")
-        guard let data = try? Data(contentsOf: credentials),
-              let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let oauth = root["claudeAiOauth"] as? [String: Any],
-              let token = oauth["accessToken"] as? String else {
-            throw UsageFetchError.credentialsUnavailable
-        }
+    static func fetch() async throws -> UsageSnapshot {
+        guard let credentials = keychainCredentials().flatMap(Credentials.init),
+              !credentials.isExpired else { throw UsageFetchError.credentialsUnavailable }
+        let email = try await tokenEmail(credentials.accessToken)
+        return try await usage(token: credentials.accessToken, detail: email)
+    }
 
+    private static func usage(token: String, detail: String) async throws -> UsageSnapshot {
         var request = URLRequest(url: URL(string: "https://api.anthropic.com/api/oauth/usage")!)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
@@ -42,8 +43,56 @@ struct ClaudeUsageFetcher {
             weeklyRemaining: weekly.remaining,
             sessionReset: session.reset,
             weeklyReset: weekly.reset,
-            detail: oauth["subscriptionType"] as? String
+            detail: detail
         )
+    }
+
+    private static func tokenEmail(_ token: String) async throws -> String {
+        let key = SHA256.hash(data: Data(token.utf8)).map { String(format: "%02x", $0) }.joined()
+        var cache = UserDefaults.standard.dictionary(forKey: "claudeTokenEmails") as? [String: String] ?? [:]
+        if let email = cache[key] { return email }
+
+        var request = URLRequest(url: URL(string: "https://api.anthropic.com/api/oauth/profile")!)
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
+        let (data, response) = try await URLSession.shared.data(for: request)
+        guard (response as? HTTPURLResponse)?.statusCode == 200,
+              let root = try JSONSerialization.jsonObject(with: data) as? [String: Any],
+              let account = root["account"] as? [String: Any],
+              let email = account["email"] as? String else {
+            throw UsageFetchError.invalidResponse
+        }
+        cache[key] = email
+        UserDefaults.standard.set(cache, forKey: "claudeTokenEmails")
+        return email
+    }
+
+    private static func keychainCredentials() -> Data? {
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "Claude Code-credentials",
+            kSecReturnData as String: true,
+            kSecMatchLimit as String: kSecMatchLimitOne,
+        ]
+        var result: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess else { return nil }
+        return result as? Data
+    }
+
+    private struct Credentials {
+        let accessToken: String
+        let expiresAt: Date?
+
+        init?(_ data: Data) {
+            guard let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let oauth = root["claudeAiOauth"] as? [String: Any],
+                  let accessToken = oauth["accessToken"] as? String else { return nil }
+            self.accessToken = accessToken
+            self.expiresAt = (oauth["expiresAt"] as? NSNumber)
+                .map { Date(timeIntervalSince1970: $0.doubleValue / 1000) }
+        }
+
+        var isExpired: Bool { expiresAt.map { $0 <= Date() } ?? false }
     }
 
     private static func window(_ value: Any?) -> (remaining: Int?, reset: Date?) {

@@ -45,7 +45,7 @@ private struct OnboardingRow: View {
                 .frame(width: 38, height: 38)
                 .glassEffect(.clear, in: Circle())
             VStack(alignment: .leading, spacing: 2) {
-                Text(item.kind == .claude ? "Claude · \(item.name)" : item.name).font(.headline)
+                Text(item.name).font(.headline)
                 Text(item.source.replacingOccurrences(of: FileManager.default.homeDirectoryForCurrentUser.path, with: "~"))
                     .font(.caption)
                     .foregroundStyle(.secondary)

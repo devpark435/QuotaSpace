@@ -7,6 +7,16 @@ struct UsageBars: View {
     var body: some View {
         if let snapshot {
             VStack(spacing: 10) {
+                if snapshot.isStale {
+                    HStack {
+                        Label("Stale", systemImage: "clock.badge.exclamationmark")
+                            .foregroundStyle(.orange)
+                        Spacer()
+                        Text("last updated \(snapshot.updatedAt, style: .relative)")
+                            .foregroundStyle(.secondary)
+                    }
+                    .font(.caption)
+                }
                 if let value = snapshot.sessionRemaining {
                     UsageBar(
                         title: snapshot.weeklyRemaining == nil ? "Available" : "5-hour",
@@ -16,6 +26,11 @@ struct UsageBars: View {
                 }
                 if let value = snapshot.weeklyRemaining {
                     UsageBar(title: "Weekly", value: value, reset: snapshot.weeklyReset)
+                }
+                if snapshot.tightestRemaining == nil {
+                    Text(error ?? "No cached usage yet. Open this Claude profile, then refresh.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         } else {
