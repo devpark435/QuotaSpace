@@ -11,6 +11,7 @@ final class MonitorStore: ObservableObject {
     @Published var isRefreshing = false
 
     private let defaults = UserDefaults.standard
+    private var failureCounts: [String: Int] = [:]
 
     private init() {
         UserDefaults.standard.removeObject(forKey: "claudeTokenEmails")
@@ -69,10 +70,15 @@ final class MonitorStore: ObservableObject {
                 }
                 snapshots[item.id] = snapshot
                 errors[item.id] = nil
+                failureCounts[item.id] = 0
             } catch {
                 errors[item.id] = error.localizedDescription
-                if snapshots[item.id] != nil {
-                    snapshots[item.id]?.staleSince = snapshots[item.id]?.staleSince ?? Date()
+                if case .rateLimited? = error as? UsageFetchError {
+                    failureCounts[item.id] = 0
+                    snapshots[item.id]?.staleSince = nil
+                } else if snapshots[item.id] != nil {
+                    failureCounts[item.id, default: 0] += 1
+                    snapshots[item.id]?.staleSince = failureCounts[item.id, default: 0] >= 3 ? Date() : nil
                 }
             }
         }

@@ -4,6 +4,7 @@ import Security
 enum UsageFetchError: LocalizedError {
     case credentialsUnavailable
     case invalidResponse
+    case rateLimited
     case commandUnavailable(String)
     case timedOut
 
@@ -11,6 +12,7 @@ enum UsageFetchError: LocalizedError {
         switch self {
         case .credentialsUnavailable: "Open Claude Code and sign in to show usage."
         case .invalidResponse: "The provider returned an unsupported usage response."
+        case .rateLimited: "Usage refresh is temporarily rate limited."
         case let .commandUnavailable(name): "\(name) is not available."
         case .timedOut: "The provider did not respond in time."
         }
@@ -29,7 +31,9 @@ struct ClaudeUsageFetcher {
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         request.setValue("oauth-2025-04-20", forHTTPHeaderField: "anthropic-beta")
         let (responseData, response) = try await URLSession.shared.data(for: request)
-        guard (response as? HTTPURLResponse)?.statusCode == 200,
+        let statusCode = (response as? HTTPURLResponse)?.statusCode
+        if statusCode == 429 { throw UsageFetchError.rateLimited }
+        guard statusCode == 200,
               let json = try JSONSerialization.jsonObject(with: responseData) as? [String: Any] else {
             throw UsageFetchError.invalidResponse
         }

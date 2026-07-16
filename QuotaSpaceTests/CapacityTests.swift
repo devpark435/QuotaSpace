@@ -6,6 +6,8 @@ final class CapacityTests: XCTestCase {
 
         XCTAssertEqual(capacity.availableFraction, 0.25)
         XCTAssertEqual(capacity.availablePercent, 25)
+        XCTAssertEqual(UsageDisplayMode.remaining.percent(fromRemaining: 83), 83)
+        XCTAssertEqual(UsageDisplayMode.used.percent(fromRemaining: 83), 17)
     }
 
     func testZeroTotalIsSafe() {

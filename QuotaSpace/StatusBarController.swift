@@ -30,12 +30,13 @@ final class StatusBarController: NSObject {
         for item in visible {
             let statusItem = statusItems[item.id] ?? makeStatusItem(for: item)
             let remaining = store.snapshots[item.id]?.tightestRemaining
+            let mode = UsageDisplayMode.current
             statusItem.button?.image = item.kind.brandAsset.flatMap { NSImage(named: $0) }
                 ?? NSImage(systemSymbolName: item.kind.icon, accessibilityDescription: item.name)
             statusItem.button?.image?.isTemplate = true
             statusItem.button?.image?.size = NSSize(width: 16, height: 16)
-            statusItem.button?.title = " \(remaining.map { "\($0)%" } ?? "—")"
-            statusItem.button?.toolTip = "\(item.name) remaining"
+            statusItem.button?.title = " \(remaining.map { "\(mode.percent(fromRemaining: $0))%" } ?? "—")"
+            statusItem.button?.toolTip = "\(item.name) \(mode == .remaining ? "remaining" : "used")"
         }
     }
 
@@ -51,9 +52,12 @@ final class StatusBarController: NSObject {
     @objc private func showDetail(_ sender: NSStatusBarButton) {
         let id = sender.identifier?.rawValue ?? ""
         popover.contentViewController = NSHostingController(
-            rootView: StatusDetailView(itemID: id).environmentObject(MonitorStore.shared)
+            rootView: StatusDetailView(itemID: id) { [weak self] in
+                self?.popover.performClose(nil)
+            }
+            .environmentObject(MonitorStore.shared)
         )
-        popover.contentSize = NSSize(width: 300, height: 220)
+        popover.contentSize = NSSize(width: 320, height: 240)
         popover.show(relativeTo: sender.bounds, of: sender, preferredEdge: .minY)
     }
 }
@@ -61,24 +65,45 @@ final class StatusBarController: NSObject {
 struct StatusDetailView: View {
     @EnvironmentObject private var store: MonitorStore
     let itemID: String
+    let dismiss: () -> Void
+    @AppStorage("usageDisplayMode", store: quotaSpaceDefaults)
+    private var usageDisplayMode = UsageDisplayMode.remaining
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            if let item = store.items.first(where: { $0.id == itemID }) {
-                HStack {
-                    MonitorIcon(kind: item.kind).frame(width: 22, height: 22)
-                    Text(item.name).font(.title2.bold())
-                }
-                UsageBars(snapshot: store.snapshots[item.id], error: store.errors[item.id])
-                Spacer()
-                HStack {
-                    Button("Open QuotaSpace") {
-                        NSApp.activate(ignoringOtherApps: true)
-                        NSApp.windows.first { $0.canBecomeMain }?.makeKeyAndOrderFront(nil)
+        ZStack {
+            Color.clear
+                .contentShape(Rectangle())
+                .onTapGesture(perform: dismiss)
+            VStack(alignment: .leading, spacing: 16) {
+                if let item = store.items.first(where: { $0.id == itemID }) {
+                    HStack {
+                        MonitorIcon(kind: item.kind)
+                            .frame(width: 24, height: 24)
+                        Text(item.name)
+                            .font(.headline)
+                        Spacer()
+                        Text(store.snapshots[item.id]?.tightestRemaining.map {
+                            "\(usageDisplayMode.percent(fromRemaining: $0))%"
+                        } ?? "—")
+                            .font(.title.bold())
+                            .monospacedDigit()
                     }
-                    .buttonStyle(.glass)
+                    UsageBars(
+                        snapshot: store.snapshots[item.id],
+                        error: store.errors[item.id],
+                        kind: item.kind
+                    )
                     Spacer()
-                    Button("Refresh") { Task { await store.refresh() } }.buttonStyle(.glass)
+                    HStack {
+                        Button("Open QuotaSpace") {
+                            dismiss()
+                            NSApp.activate(ignoringOtherApps: true)
+                            NSApp.windows.first { $0.canBecomeMain }?.makeKeyAndOrderFront(nil)
+                        }
+                        .buttonStyle(.glass)
+                        Spacer()
+                        Button("Refresh") { Task { await store.refresh() } }.buttonStyle(.glass)
+                    }
                 }
             }
         }

@@ -27,36 +27,42 @@ struct CapacityProvider: TimelineProvider {
 
 struct QuotaSpaceWidgetView: View {
     let entry: CapacityEntry
+    @AppStorage("usageDisplayMode", store: quotaSpaceDefaults)
+    private var usageDisplayMode = UsageDisplayMode.remaining
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack {
-                Label("QuotaSpace", systemImage: "circle.grid.2x2.fill")
+                Label("Mac Storage", systemImage: "internaldrive.fill")
                     .font(.headline)
                 Spacer()
-                Text("\(entry.disk.availablePercent)%")
-                    .font(.title2.bold())
-                    .contentTransition(.numericText())
             }
-
-            ProgressView(value: entry.disk.availableFraction)
-                .tint(.blue)
-
-            Text("\(entry.disk.availableText) disk space available")
-                .font(.caption)
-                .foregroundStyle(.secondary)
 
             Spacer(minLength: 0)
 
-            HStack {
-                Label("Claude", systemImage: "sparkles")
-                Spacer()
-                Label("Codex", systemImage: "chevron.left.forwardslash.chevron.right")
-            }
-            .font(.caption)
-            .foregroundStyle(.secondary)
+            Text("\(usageDisplayMode.percent(fromRemaining: entry.disk.availablePercent))%")
+                .font(.system(.largeTitle, design: .rounded, weight: .bold))
+                .contentTransition(.numericText())
+
+            Text(usageDisplayMode == .remaining ? "available" : "used")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
+            ProgressView(
+                value: usageDisplayMode == .remaining
+                    ? entry.disk.availableFraction
+                    : 1 - entry.disk.availableFraction
+            )
+                .tint(.blue)
+
+            Text(
+                "\(usageDisplayMode == .remaining ? entry.disk.availableText : entry.disk.usedText) "
+                    + "\(usageDisplayMode == .remaining ? "free" : "used") of \(entry.disk.totalText)"
+            )
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
-        .containerBackground(.clear, for: .widget)
+        .containerBackground(.fill.tertiary, for: .widget)
     }
 }
 
@@ -68,7 +74,7 @@ struct QuotaSpaceWidget: Widget {
             QuotaSpaceWidgetView(entry: entry)
         }
         .configurationDisplayName("QuotaSpace")
-        .description("See your AI quotas and Mac storage at a glance.")
+        .description("See available Mac storage at a glance.")
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
@@ -79,4 +85,3 @@ struct QuotaSpaceWidgetBundle: WidgetBundle {
         QuotaSpaceWidget()
     }
 }
-

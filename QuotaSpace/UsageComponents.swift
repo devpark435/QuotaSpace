@@ -15,6 +15,9 @@ struct MonitorIcon: View {
 struct UsageBars: View {
     let snapshot: UsageSnapshot?
     let error: String?
+    let kind: MonitorKind
+    @AppStorage("usageDisplayMode", store: quotaSpaceDefaults)
+    private var usageDisplayMode = UsageDisplayMode.remaining
 
     var body: some View {
         if let snapshot {
@@ -28,11 +31,19 @@ struct UsageBars: View {
                     UsageBar(
                         title: snapshot.weeklyRemaining == nil ? "Available" : "5-hour",
                         value: value,
-                        reset: snapshot.sessionReset
+                        reset: snapshot.sessionReset,
+                        kind: kind,
+                        mode: usageDisplayMode
                     )
                 }
                 if let value = snapshot.weeklyRemaining {
-                    UsageBar(title: "Weekly", value: value, reset: snapshot.weeklyReset)
+                    UsageBar(
+                        title: "Weekly",
+                        value: value,
+                        reset: snapshot.weeklyReset,
+                        kind: kind,
+                        mode: usageDisplayMode
+                    )
                 }
                 if snapshot.tightestRemaining == nil {
                     Text(error ?? "No cached usage yet. Open this Claude profile, then refresh.")
@@ -53,6 +64,8 @@ private struct UsageBar: View {
     let title: String
     let value: Int
     let reset: Date?
+    let kind: MonitorKind
+    let mode: UsageDisplayMode
 
     var body: some View {
         VStack(spacing: 5) {
@@ -62,11 +75,15 @@ private struct UsageBar: View {
                 if let reset {
                     Text("resets \(reset, style: .relative)").foregroundStyle(.secondary)
                 }
-                Text("\(value)% left").monospacedDigit()
+                Text("\(mode.percent(fromRemaining: value))% \(suffix)").monospacedDigit()
             }
             .font(.caption)
-            ProgressView(value: Double(value), total: 100)
+            ProgressView(value: Double(mode.percent(fromRemaining: value)), total: 100)
                 .tint(value < 20 ? .red : value < 40 ? .orange : .accentColor)
         }
+    }
+
+    private var suffix: String {
+        mode == .used ? "used" : kind == .disk ? "free" : "left"
     }
 }

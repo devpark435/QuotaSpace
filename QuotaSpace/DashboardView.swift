@@ -58,12 +58,12 @@ private struct OverviewView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Overview")
                         .font(.largeTitle.bold())
-                    Text(store.isRefreshing ? "Refreshing usage…" : "Your available capacity at a glance")
+                    Text(store.isRefreshing ? "Refreshing…" : "Claude, Codex, and Mac capacity")
                         .foregroundStyle(.secondary)
                 }
 
                 GlassEffectContainer(spacing: 14) {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 250), spacing: 14)], spacing: 14) {
+                    LazyVStack(spacing: 14) {
                         ForEach(store.items.filter(\.isEnabled)) { item in
                             UsageCard(
                                 item: item,
@@ -84,6 +84,8 @@ private struct UsageCard: View {
     let item: MonitorItem
     let snapshot: UsageSnapshot?
     let error: String?
+    @AppStorage("usageDisplayMode", store: quotaSpaceDefaults)
+    private var usageDisplayMode = UsageDisplayMode.remaining
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -94,19 +96,19 @@ private struct UsageCard: View {
                     .frame(width: 24, height: 24)
                     .frame(width: 44, height: 44)
                     .glassEffect(.clear, in: Circle())
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(item.name)
-                        .font(.headline)
-                    Text(snapshot?.detail ?? item.kind.rawValue.capitalized)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                Text(item.name)
+                    .font(.headline)
                 Spacer()
-                Text(snapshot?.tightestRemaining.map { "\($0)%" } ?? "—")
-                    .font(.title2.bold())
+                Text(snapshot?.tightestRemaining.map(displayText) ?? "—")
+                    .font(.title3.bold())
                     .contentTransition(.numericText())
             }
-            UsageBars(snapshot: snapshot, error: error)
+            UsageBars(snapshot: snapshot, error: error, kind: item.kind)
+            if item.kind == .disk, let detail = snapshot?.detail {
+                Text(detail)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -119,5 +121,10 @@ private struct UsageCard: View {
         case .codex: .green
         case .disk: .blue
         }
+    }
+
+    private func displayText(_ remaining: Int) -> String {
+        let suffix = usageDisplayMode == .used ? "used" : item.kind == .disk ? "free" : "left"
+        return "\(usageDisplayMode.percent(fromRemaining: remaining))% \(suffix)"
     }
 }

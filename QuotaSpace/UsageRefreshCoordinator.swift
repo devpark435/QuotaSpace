@@ -7,6 +7,7 @@ final class UsageRefreshCoordinator: @unchecked Sendable {
     private var activityTimer: DispatchSourceTimer?
     private var pendingRefresh: DispatchWorkItem?
     private var fallbackTimer: DispatchSourceTimer?
+    private var lastRefresh = Date()
 
     func start(home: URL = FileManager.default.homeDirectoryForCurrentUser) {
         queue.async {
@@ -48,10 +49,12 @@ final class UsageRefreshCoordinator: @unchecked Sendable {
         pendingRefresh?.cancel()
         let work = DispatchWorkItem { [weak self] in self?.refresh() }
         pendingRefresh = work
-        queue.asyncAfter(deadline: .now() + 2, execute: work)
+        let delay = max(2, 60 - Date().timeIntervalSince(lastRefresh))
+        queue.asyncAfter(deadline: .now() + delay, execute: work)
     }
 
     private func refresh() {
+        lastRefresh = Date()
         Task { @MainActor in await MonitorStore.shared.refresh() }
     }
 
