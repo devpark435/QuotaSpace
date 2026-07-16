@@ -20,14 +20,9 @@ struct UsageBars: View {
         if let snapshot {
             VStack(spacing: 10) {
                 if snapshot.isStale {
-                    HStack {
-                        Label("Stale", systemImage: "clock.badge.exclamationmark")
-                            .foregroundStyle(.orange)
-                        Spacer()
-                        Text("last updated \(snapshot.updatedAt, style: .relative)")
-                            .foregroundStyle(.secondary)
-                    }
-                    .font(.caption)
+                    Label("Stale", systemImage: "clock.badge.exclamationmark")
+                        .foregroundStyle(.orange)
+                        .font(.caption)
                 }
                 if let value = snapshot.sessionRemaining {
                     UsageBar(
