@@ -1,0 +1,221 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		100000000000000000000001 /* QuotaSpaceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000001 /* QuotaSpaceApp.swift */; };
+		100000000000000000000002 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000002 /* DashboardView.swift */; };
+		100000000000000000000003 /* Capacity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000003 /* Capacity.swift */; };
+		100000000000000000000004 /* QuotaSpaceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000004 /* QuotaSpaceWidget.swift */; };
+		100000000000000000000005 /* Capacity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000003 /* Capacity.swift */; };
+		100000000000000000000006 /* CapacityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000006 /* CapacityTests.swift */; };
+		100000000000000000000007 /* Capacity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000003 /* Capacity.swift */; };
+		100000000000000000000008 /* QuotaSpaceWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 200000000000000000000008 /* QuotaSpaceWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		100000000000000000000009 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 200000000000000000000009 /* XCTest.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		300000000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 400000000000000000000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 500000000000000000000002;
+			remoteInfo = QuotaSpaceWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		600000000000000000000001 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (100000000000000000000008 /* QuotaSpaceWidget.appex in Embed App Extensions */, );
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		200000000000000000000001 /* QuotaSpaceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaSpaceApp.swift; sourceTree = "<group>"; };
+		200000000000000000000002 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		200000000000000000000003 /* Capacity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Capacity.swift; sourceTree = "<group>"; };
+		200000000000000000000004 /* QuotaSpaceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuotaSpaceWidget.swift; sourceTree = "<group>"; };
+		200000000000000000000005 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		200000000000000000000006 /* CapacityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapacityTests.swift; sourceTree = "<group>"; };
+		200000000000000000000007 /* QuotaSpace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuotaSpace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		200000000000000000000008 /* QuotaSpaceWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = QuotaSpaceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		200000000000000000000009 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = System/Library/Frameworks/XCTest.framework; sourceTree = SDKROOT; };
+		20000000000000000000000A /* QuotaSpaceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = QuotaSpaceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		20000000000000000000000B /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		700000000000000000000001 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		700000000000000000000002 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		700000000000000000000003 /* Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000009 /* XCTest.framework in Frameworks */, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		800000000000000000000001 = {
+			isa = PBXGroup;
+			children = (
+				800000000000000000000002 /* QuotaSpace */,
+				800000000000000000000003 /* QuotaSpaceWidget */,
+				800000000000000000000004 /* QuotaSpaceTests */,
+				20000000000000000000000B /* README.md */,
+				800000000000000000000005 /* Frameworks */,
+				800000000000000000000006 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		800000000000000000000002 /* QuotaSpace */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000001 /* QuotaSpaceApp.swift */,
+				200000000000000000000002 /* DashboardView.swift */,
+				200000000000000000000003 /* Capacity.swift */,
+			);
+			path = QuotaSpace;
+			sourceTree = "<group>";
+		};
+		800000000000000000000003 /* QuotaSpaceWidget */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000004 /* QuotaSpaceWidget.swift */,
+				200000000000000000000005 /* Info.plist */,
+			);
+			path = QuotaSpaceWidget;
+			sourceTree = "<group>";
+		};
+		800000000000000000000004 /* QuotaSpaceTests */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000006 /* CapacityTests.swift */, );
+			path = QuotaSpaceTests;
+			sourceTree = "<group>";
+		};
+		800000000000000000000005 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (200000000000000000000009 /* XCTest.framework */, );
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		800000000000000000000006 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				200000000000000000000007 /* QuotaSpace.app */,
+				200000000000000000000008 /* QuotaSpaceWidget.appex */,
+				20000000000000000000000A /* QuotaSpaceTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		500000000000000000000001 /* QuotaSpace */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 900000000000000000000002 /* Build configuration list for PBXNativeTarget "QuotaSpace" */;
+			buildPhases = (
+				A00000000000000000000001 /* Sources */,
+				700000000000000000000001 /* Frameworks */,
+				B00000000000000000000001 /* Resources */,
+				600000000000000000000001 /* Embed App Extensions */,
+			);
+			buildRules = ();
+			dependencies = (C00000000000000000000001 /* PBXTargetDependency */, );
+			name = QuotaSpace;
+			productName = QuotaSpace;
+			productReference = 200000000000000000000007 /* QuotaSpace.app */;
+			productType = "com.apple.product-type.application";
+		};
+		500000000000000000000002 /* QuotaSpaceWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 900000000000000000000003 /* Build configuration list for PBXNativeTarget "QuotaSpaceWidget" */;
+			buildPhases = (A00000000000000000000002 /* Sources */, 700000000000000000000002 /* Frameworks */, B00000000000000000000002 /* Resources */, );
+			buildRules = ();
+			dependencies = ();
+			name = QuotaSpaceWidget;
+			productName = QuotaSpaceWidget;
+			productReference = 200000000000000000000008 /* QuotaSpaceWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		500000000000000000000003 /* QuotaSpaceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 900000000000000000000004 /* Build configuration list for PBXNativeTarget "QuotaSpaceTests" */;
+			buildPhases = (A00000000000000000000003 /* Sources */, 700000000000000000000003 /* Frameworks */, B00000000000000000000003 /* Resources */, );
+			buildRules = ();
+			dependencies = ();
+			name = QuotaSpaceTests;
+			productName = QuotaSpaceTests;
+			productReference = 20000000000000000000000A /* QuotaSpaceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		400000000000000000000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2620;
+				LastUpgradeCheck = 2620;
+				TargetAttributes = {
+					500000000000000000000001 = {CreatedOnToolsVersion = 26.2; };
+					500000000000000000000002 = {CreatedOnToolsVersion = 26.2; };
+					500000000000000000000003 = {CreatedOnToolsVersion = 26.2; };
+				};
+			};
+			buildConfigurationList = 900000000000000000000001 /* Build configuration list for PBXProject "QuotaSpace" */;
+			compatibilityVersion = "Xcode 16.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (en, Base, );
+			mainGroup = 800000000000000000000001;
+			productRefGroup = 800000000000000000000006 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (500000000000000000000001 /* QuotaSpace */, 500000000000000000000002 /* QuotaSpaceWidget */, 500000000000000000000003 /* QuotaSpaceTests */, );
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B00000000000000000000001 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B00000000000000000000002 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		B00000000000000000000003 /* Resources */ = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A00000000000000000000001 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000001, 100000000000000000000002, 100000000000000000000003, ); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000002 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000004, 100000000000000000000005, ); runOnlyForDeploymentPostprocessing = 0; };
+		A00000000000000000000003 /* Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (100000000000000000000006, 100000000000000000000007, ); runOnlyForDeploymentPostprocessing = 0; };
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		C00000000000000000000001 /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = 500000000000000000000002 /* QuotaSpaceWidget */; targetProxy = 300000000000000000000001 /* PBXContainerItemProxy */; };
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		D00000000000000000000001 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 26.0; SDKROOT = macosx; SWIFT_VERSION = 6.0; }; name = Debug; };
+		D00000000000000000000002 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CLANG_ENABLE_MODULES = YES; MACOSX_DEPLOYMENT_TARGET = 26.0; SDKROOT = macosx; SWIFT_COMPILATION_MODE = wholemodule; SWIFT_VERSION = 6.0; }; name = Release; };
+		D00000000000000000000003 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; CURRENT_PROJECT_VERSION = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = QuotaSpace; INFOPLIST_KEY_LSUIElement = YES; MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.quotaspace.app; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; }; name = Debug; };
+		D00000000000000000000004 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; COMBINE_HIDPI_IMAGES = YES; CURRENT_PROJECT_VERSION = 1; GENERATE_INFOPLIST_FILE = YES; INFOPLIST_KEY_CFBundleDisplayName = QuotaSpace; INFOPLIST_KEY_LSUIElement = YES; MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.quotaspace.app; PRODUCT_NAME = "$(TARGET_NAME)"; SWIFT_EMIT_LOC_STRINGS = YES; }; name = Release; };
+		D00000000000000000000005 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; INFOPLIST_FILE = QuotaSpaceWidget/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", "@executable_path/../../../../Frameworks", ); MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.quotaspace.app.widget; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SWIFT_EMIT_LOC_STRINGS = YES; }; name = Debug; };
+		D00000000000000000000006 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {APPLICATION_EXTENSION_API_ONLY = YES; CODE_SIGN_STYLE = Automatic; CURRENT_PROJECT_VERSION = 1; INFOPLIST_FILE = QuotaSpaceWidget/Info.plist; LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", "@executable_path/../../../../Frameworks", ); MARKETING_VERSION = 0.1.0; PRODUCT_BUNDLE_IDENTIFIER = com.quotaspace.app.widget; PRODUCT_NAME = "$(TARGET_NAME)"; SKIP_INSTALL = YES; SWIFT_EMIT_LOC_STRINGS = YES; }; name = Release; };
+		D00000000000000000000007 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {BUNDLE_LOADER = ""; CODE_SIGNING_ALLOWED = NO; GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = com.quotaspace.tests; PRODUCT_NAME = "$(TARGET_NAME)"; }; name = Debug; };
+		D00000000000000000000008 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {BUNDLE_LOADER = ""; CODE_SIGNING_ALLOWED = NO; GENERATE_INFOPLIST_FILE = YES; PRODUCT_BUNDLE_IDENTIFIER = com.quotaspace.tests; PRODUCT_NAME = "$(TARGET_NAME)"; }; name = Release; };
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		900000000000000000000001 /* Build configuration list for PBXProject "QuotaSpace" */ = {isa = XCConfigurationList; buildConfigurations = (D00000000000000000000001, D00000000000000000000002, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		900000000000000000000002 /* Build configuration list for PBXNativeTarget "QuotaSpace" */ = {isa = XCConfigurationList; buildConfigurations = (D00000000000000000000003, D00000000000000000000004, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		900000000000000000000003 /* Build configuration list for PBXNativeTarget "QuotaSpaceWidget" */ = {isa = XCConfigurationList; buildConfigurations = (D00000000000000000000005, D00000000000000000000006, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		900000000000000000000004 /* Build configuration list for PBXNativeTarget "QuotaSpaceTests" */ = {isa = XCConfigurationList; buildConfigurations = (D00000000000000000000007, D00000000000000000000008, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+/* End XCConfigurationList section */
+	};
+	rootObject = 400000000000000000000001 /* Project object */;
+}
+
